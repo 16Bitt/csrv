@@ -18,7 +18,21 @@ enum CsrvStatus {
   CSRV_LISTEN_FAILURE,
   CSRV_ACCEPT_FAILURE,
   CSRV_HEADER_PARSE_FAILURE,
-  CSRV_ALLOC_FAILURE
+  CSRV_ALLOC_FAILURE,
+  CSRV_RETRY_EXCEEDED
+};
+
+// Internal states during header parsing
+enum CsrvHeaderParseState {
+  CSRV_HEADER_PARSE_METHOD,
+  CSRV_HEADER_PARSE_AFTER_METHOD,
+  CSRV_HEADER_PARSE_URI,
+  CSRV_HEADER_PARSE_AFTER_URI,
+  CSRV_HEADER_PARSE_PROTO,
+  CSRV_HEADER_PARSE_KEY,
+  CSRV_HEADER_PARSE_WHITESPACE,
+  CSRV_HEADER_PARSE_VALUE,
+  CSRV_HEADER_PARSE_RETURN
 };
 
 // Hashmap of string->string
@@ -50,6 +64,7 @@ struct Csrv {
 };
 
 #define CSRV_LISTEN_BACKLOG 20
+#define CSRV_MAX_EAGAIN_TRIES 8
 
 // Connection handling
 void csrv_listen(struct Csrv *csrv);
@@ -61,8 +76,9 @@ void csrv_accept_thread(struct Csrv *csrv, int sock_handle);
 struct CsrvRequestHeader {
   unsigned int status_code;
   size_t content_size;
-
+  
   char *host;
+  char *method;
   char *uri;
   char *path;
 
@@ -72,6 +88,7 @@ struct CsrvRequestHeader {
 struct CsrvRequest {
   int socket_handle;
   size_t id;
+  size_t body_offset;
   enum CsrvStatus status;
   
   struct CsrvRequestHeader headers;
@@ -97,6 +114,7 @@ int csrv_str_map_init(struct CsrvStrMap *map);
 void csrv_str_map_cleanup(struct CsrvStrMap *map);
 size_t csrv_djb2_hash(char *str);
 void csrv_str_map_add(struct CsrvStrMap *map, char *key, char *value);
+char *csrv_str_map_get(struct CsrvStrMap *map, char *key);
 
 // Logging
 #define CSRV_LOG_INFO(csrv, fmt, ...) \

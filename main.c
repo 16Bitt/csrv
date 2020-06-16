@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "errno.h"
+#include "string.h"
 #include "csrv.h"
 
 int main(int argc, char **argv) {
@@ -11,7 +12,7 @@ int main(int argc, char **argv) {
   srv.log = fopen("/dev/stdout", "w");
 
   if(srv.log == NULL) {
-    printf("FAILED TO ACQUIRE STDOUT: %d\n", errno);
+    printf("FAILED TO ACQUIRE STDOUT: %s\n", strerror(errno));
     exit(1);
   }
 

@@ -38,6 +38,11 @@ void csrv_str_map_add(struct CsrvStrMap *map, char *key, char *value) {
   map->n_items++;
 }
 
+char *csrv_str_map_get(struct CsrvStrMap *map, char *key) {
+  size_t idx = csrv_djb2_hash(key);
+  return map->hashmap[idx];
+}
+
 void csrv_str_map_cleanup(struct CsrvStrMap *map) {
   free(map->hashmap);
 }

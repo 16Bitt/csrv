@@ -121,14 +121,17 @@ void csrv_accept_fork(struct Csrv *csrv, int sock_handle) {
   }
 
   csrv_parse_headers(req);
-  char *val = csrv_str_vec_value(&req->request);
-  puts(val);
+  if(req->status == CSRV_OK) {
+    CSRV_LOG_INFO(csrv, "%s %s", req->headers.method, req->headers.uri);
+    char *val = csrv_str_vec_value(&req->request);
+    // TODO: add http handler
+    char *message = "Hello!";
+    write(sock_handle, message, strlen(message));
+  } else {
+    CSRV_LOG_ERROR(csrv, "request failed with status=%d", req->status);
+  }
 
-  // TODO: add http handler
-  char *message = "Hello!";
-  write(sock_handle, message, strlen(message));
   close(sock_handle);
-
   csrv_cleanup_request(req);
   exit(0);
 }
