@@ -35,6 +35,7 @@ enum CsrvHeaderParseState {
   CSRV_HEADER_PARSE_RETURN
 };
 
+
 // Hashmap of string->string
 struct CsrvStrMap {
   size_t n_items;
@@ -81,6 +82,7 @@ struct CsrvRequestHeader {
   char *method;
   char *uri;
   char *path;
+  char *proto;
 
   struct CsrvStrMap header_map;
 };
@@ -98,6 +100,8 @@ struct CsrvRequest {
 
 #define CSRV_CHUNK_SIZE (512 * sizeof(char))
 struct CsrvRequest *csrv_alloc_request(struct Csrv *csrv, int new_socket_handle);
+bool csrv_probe_header_end(struct CsrvRequest *req, ssize_t buffer_offs);
+int csrv_read_header_chunk(struct CsrvRequest *req);
 void csrv_cleanup_request(struct CsrvRequest *req);
 void csrv_parse_headers(struct CsrvRequest *req);
 

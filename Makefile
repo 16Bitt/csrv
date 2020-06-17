@@ -1,4 +1,4 @@
-CFLAGS 	= -g -I. -DUSE_BSD_API
+CFLAGS 	= -g -I. -DUSE_BSD_API -Werror -Wall
 CC 			= gcc
 TARGET	= csrv
 SOURCES = $(patsubst %.c,%.o,$(wildcard *.c))
