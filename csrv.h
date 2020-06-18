@@ -42,6 +42,10 @@ struct CsrvStrMap {
   size_t n_collisions;
   size_t size;
   char **hashmap;
+
+  // Push-only size_t vector to simplify cleanup
+  size_t *used_idx;
+  size_t used_idx_sz;
 };
 
 // String vector
@@ -64,16 +68,6 @@ struct Csrv {
   size_t request_id_max;
 };
 
-#define CSRV_LISTEN_BACKLOG 20
-#define CSRV_MAX_EAGAIN_TRIES 8
-
-// Connection handling
-void csrv_listen(struct Csrv *csrv);
-void csrv_accept_handler(struct Csrv *csrv);
-void csrv_accept_fork(struct Csrv *csrv, int sock_handle);
-void csrv_accept_thread(struct Csrv *csrv, int sock_handle);
-
-// Handler entrypoints and structures
 struct CsrvRequestHeader {
   unsigned int status_code;
   size_t content_size;
@@ -98,12 +92,22 @@ struct CsrvRequest {
   struct Csrv *csrv;
 };
 
+// Connection handling
+#define CSRV_LISTEN_BACKLOG 20
+#define CSRV_MAX_EAGAIN_TRIES 8
+void csrv_listen(struct Csrv *csrv);
+void csrv_accept_handler(struct Csrv *csrv);
+void csrv_accept_fork(struct Csrv *csrv, int sock_handle);
+void csrv_accept_thread(struct Csrv *csrv, int sock_handle);
+
+// Request handling
 #define CSRV_CHUNK_SIZE (512 * sizeof(char))
 struct CsrvRequest *csrv_alloc_request(struct Csrv *csrv, int new_socket_handle);
 bool csrv_probe_header_end(struct CsrvRequest *req, ssize_t buffer_offs);
 int csrv_read_header_chunk(struct CsrvRequest *req);
 void csrv_cleanup_request(struct CsrvRequest *req);
 void csrv_parse_headers(struct CsrvRequest *req);
+int csrv_set_request_meta(struct CsrvRequest *req);
 
 // String handling
 #define CSRV_STR_VEC_SIZE 32

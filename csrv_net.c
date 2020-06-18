@@ -123,6 +123,7 @@ void csrv_accept_fork(struct Csrv *csrv, int sock_handle) {
   csrv_parse_headers(req);
   if(req->status == CSRV_OK) {
     CSRV_LOG_INFO(csrv, "%s %s", req->headers.method, req->headers.uri);
+    CSRV_LOG_INFO(csrv, "Size: %zu", req->headers.content_size);
     // TODO: add http handler
     char *message = "Hello!";
     write(sock_handle, message, strlen(message));

@@ -258,7 +258,26 @@ void csrv_parse_headers(struct CsrvRequest *req) {
     req->status = CSRV_HEADER_PARSE_FAILURE;
     return;
   }
+  
+  if(csrv_set_request_meta(req) != 0) {
+    goto parse_alloc_fail;
+  }
 
   req->status = CSRV_OK;
+}
+
+int csrv_set_request_meta(struct CsrvRequest *req) {
+  char* len = csrv_str_map_get(&req->headers.header_map, "Content-Length");
+  if(len == NULL) {
+    req->headers.content_size = 0;
+    return 0;
+  }
+  
+  if(sscanf(len, "%zu", &req->headers.content_size) != 1) {
+    req->headers.content_size = 0;
+    return -1;
+  }
+
+  return 0;
 }
 
