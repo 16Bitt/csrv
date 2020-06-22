@@ -135,6 +135,7 @@ void csrv_parse_headers(struct CsrvRequest *req) {
   // Individually parse out headers
   for(size_t i = 0; i < req->body_offset; i++) {
     char current = req->request.string[i];
+
     if(current == ':' && state == CSRV_HEADER_PARSE_KEY) {
       key = csrv_str_vec_value(&vec);
       if(key == NULL) {
@@ -201,6 +202,11 @@ void csrv_parse_headers(struct CsrvRequest *req) {
             goto parse_alloc_fail;
           }
           state = CSRV_HEADER_PARSE_AFTER_URI;
+          break;
+        case CSRV_HEADER_PARSE_VALUE:
+          if(csrv_str_vec_pushc(&vec, current) != 0) {
+            goto parse_alloc_fail;
+          }
           break;
         case CSRV_HEADER_PARSE_AFTER_METHOD:
         case CSRV_HEADER_PARSE_AFTER_URI:

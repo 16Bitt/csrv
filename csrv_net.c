@@ -102,7 +102,7 @@ void csrv_accept_handler(struct Csrv *csrv) {
 void csrv_accept_fork(struct Csrv *csrv, int sock_handle) {
   int pid = fork();
   if(pid == -1) {
-    CSRV_LOG_ERROR(csrv, "fork() failed with %d", errno);
+    CSRV_LOG_ERROR(csrv, "fork() failed with errno=%s", strerror(errno));
     close(sock_handle);
     return;
   }
