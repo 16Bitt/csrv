@@ -1,0 +1,32 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+csrv_accept_fork	net.c	/^void csrv_accept_fork(struct Csrv *csrv, int sock_handle) {$/;"	f
+csrv_accept_handler	net.c	/^void csrv_accept_handler(struct Csrv *csrv) {$/;"	f
+csrv_accept_thread	net.c	/^void csrv_accept_thread(struct Csrv *csrv, int sock_handle) {$/;"	f
+csrv_alloc_request	request.c	/^struct CsrvRequest *csrv_alloc_request(struct Csrv *csrv, int new_socket_handle) {$/;"	f
+csrv_cleanup_request	request.c	/^void csrv_cleanup_request(struct CsrvRequest *req) {$/;"	f
+csrv_cleanup_response	handling.c	/^void csrv_cleanup_response(struct CsrvResponse *resp) {$/;"	f
+csrv_djb2_hash	str_map.c	/^size_t csrv_djb2_hash(char *str) {$/;"	f
+csrv_init_response	handling.c	/^struct CsrvResponse *csrv_init_response(struct CsrvRequest *req) {$/;"	f
+csrv_listen	net.c	/^void csrv_listen(struct Csrv *csrv) {$/;"	f
+csrv_parse_headers	request.c	/^void csrv_parse_headers(struct CsrvRequest *req) {$/;"	f
+csrv_parse_params	uri.c	/^int csrv_parse_params(char *uri, struct CsrvStrMap *params) {$/;"	f
+csrv_probe_header_end	request.c	/^bool csrv_probe_header_end(struct CsrvRequest *req, ssize_t buffer_offs) {$/;"	f
+csrv_read_header_chunk	request.c	/^int csrv_read_header_chunk(struct CsrvRequest *req) {$/;"	f
+csrv_response_status_string	handling.c	/^char *csrv_response_status_string(enum CsrvResponseStatus status) {$/;"	f
+csrv_set_request_meta	request.c	/^int csrv_set_request_meta(struct CsrvRequest *req) {$/;"	f
+csrv_str_map_add	str_map.c	/^void csrv_str_map_add(struct CsrvStrMap *map, char *key, char *value) {$/;"	f
+csrv_str_map_cleanup	str_map.c	/^void csrv_str_map_cleanup(struct CsrvStrMap *map) {$/;"	f
+csrv_str_map_get	str_map.c	/^char *csrv_str_map_get(struct CsrvStrMap *map, char *key) {$/;"	f
+csrv_str_map_init	str_map.c	/^int csrv_str_map_init(struct CsrvStrMap *map) {$/;"	f
+csrv_str_vec_init	string.c	/^int csrv_str_vec_init(struct CsrvStrVec *vec) {$/;"	f
+csrv_str_vec_pushc	string.c	/^int csrv_str_vec_pushc(struct CsrvStrVec *vec, char c) {$/;"	f
+csrv_str_vec_pushn	string.c	/^int csrv_str_vec_pushn(struct CsrvStrVec *vec, char* buffer, size_t sz) {$/;"	f
+csrv_str_vec_value	string.c	/^char *csrv_str_vec_value(struct CsrvStrVec *vec) {$/;"	f
+csrv_uri_decode	uri.c	/^char *csrv_uri_decode(char *uri) {$/;"	f
+csrv_write_response	handling.c	/^int csrv_write_response(struct CsrvResponse *resp) {$/;"	f
+main	main.c	/^int main(int argc, char **argv) {$/;"	f

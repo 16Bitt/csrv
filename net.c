@@ -100,6 +100,12 @@ void csrv_accept_handler(struct Csrv *csrv) {
 }
 
 void csrv_accept_fork(struct Csrv *csrv, int sock_handle) {
+  CSRV_LOG_INFO(csrv, "enter csrv_accept_fork()");
+  
+  // We don't want to wait() for child processes to finish
+  // If we don't handle this signal, we either have to wait for the
+  // process to finish (blocking) or ignore it (creates process zombies)
+  signal(SIGCHLD, SIG_IGN);
   int pid = fork();
   if(pid == -1) {
     CSRV_LOG_ERROR(csrv, "fork() failed with errno=%s", strerror(errno));
@@ -117,23 +123,37 @@ void csrv_accept_fork(struct Csrv *csrv, int sock_handle) {
   if(req == NULL) {
     CSRV_LOG_ERROR(csrv, "csrv_alloc_request() failed! Aborting.");
     close(sock_handle);
-    exit(1);
+    _exit(1);
   }
 
   csrv_parse_headers(req);
   if(req->status == CSRV_OK) {
     CSRV_LOG_INFO(csrv, "%s %s", req->headers.method, req->headers.uri);
     CSRV_LOG_INFO(csrv, "Size: %zu", req->headers.content_size);
-    // TODO: add http handler
-    char *message = "Hello!";
-    write(sock_handle, message, strlen(message));
+    struct CsrvResponse *resp = csrv_init_response(req);
+    if(resp == NULL) {
+      CSRV_LOG_ERROR(csrv, "failed to create response");
+      _exit(1);
+    }
+    
+    //TODO: Remove this test code
+    char *text = "Hello, world!";
+    if(csrv_str_vec_pushn(&resp->body, text, strlen(text)) != 0) {
+      CSRV_LOG_ERROR(resp->csrv, "failed to write body, errno=%s", strerror(errno));
+    }
+
+    if(csrv_write_response(resp) != 0) {
+      CSRV_LOG_ERROR(csrv, "failed to write response, errno=%s", strerror(errno));
+    }
+    csrv_cleanup_response(resp);
   } else {
     CSRV_LOG_ERROR(csrv, "request failed with status=%d", req->status);
   }
 
   close(sock_handle);
   csrv_cleanup_request(req);
-  exit(0);
+  CSRV_LOG_INFO(csrv, "ending forked process");
+  _exit(0);
 }
 
 void csrv_accept_thread(struct Csrv *csrv, int sock_handle) {
