@@ -25,9 +25,8 @@ int csrv_str_map_init(struct CsrvStrMap *map) {
     return -1;
   }
   
-  map->used_idx_sz = 0;
-  map->used_idx = (size_t *) malloc(sizeof(size_t) * map->size);
-  if(map->used_idx == NULL) {
+  map->keys = (char **) malloc(sizeof(char*) * map->size);
+  if(map->keys == NULL) {
     return -1;
   }
 
@@ -42,8 +41,8 @@ void csrv_str_map_add(struct CsrvStrMap *map, char *key, char *value) {
     return;
   }
   map->hashmap[idx] = value;
+  map->keys[map->n_items] = key;
   map->n_items++;
-  map->used_idx[map->used_idx_sz++] = idx;
 }
 
 char *csrv_str_map_get(struct CsrvStrMap *map, char *key) {
@@ -52,12 +51,14 @@ char *csrv_str_map_get(struct CsrvStrMap *map, char *key) {
 }
 
 void csrv_str_map_cleanup(struct CsrvStrMap *map) {
-  for(size_t i = 0; i < map->used_idx_sz; i++) {
-    size_t idx = map->used_idx[i];
+  for(size_t i = 0; i < map->n_items; i++) {
+    char* key = map->keys[i];
+    size_t idx = csrv_djb2_hash(key) % map->size;
     free(map->hashmap[idx]);
+    free(key);
   }
   
-  free(map->used_idx);
+  free(map->keys);
   free(map->hashmap);
 }
 

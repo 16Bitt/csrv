@@ -59,6 +59,19 @@ int csrv_write_response(struct CsrvResponse *resp) {
   fprintf(file, "HTTP/1.1 %s\r\n", csrv_response_status_string(resp->status));
   fprintf(file, "Connection: Keep-Alive\r\n");
   fprintf(file, "Keep-Alive: timeout=5, max=999\r\n");
+  
+  // Include user-defined headers
+  for(size_t i = 0; i < resp->headers.n_items; i++) {
+    char *key = resp->headers.keys[i];
+    char *value = csrv_str_map_get(&resp->headers, key);
+
+    if(value == NULL) {
+      continue;
+    }
+
+    fprintf(file, "%s: %s\r\n", key, value);
+  }
+
   // length technically includes the \0 character, so subtract 1
   fprintf(file, "Content-Length: %zu\r\n", resp->body.length - 1);
   fprintf(file, "Content-Type: text/plain\r\n");

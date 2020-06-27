@@ -50,9 +50,8 @@ struct CsrvStrMap {
   size_t size;
   char **hashmap;
 
-  // Push-only size_t vector to simplify cleanup
-  size_t *used_idx;
-  size_t used_idx_sz;
+  // Push-only key vector to simplify cleanup and allow iteration
+  char **keys;
 };
 
 // String vector

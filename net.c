@@ -141,6 +141,10 @@ void csrv_accept_fork(struct Csrv *csrv, int sock_handle) {
     if(csrv_str_vec_pushn(&resp->body, text, strlen(text)) != 0) {
       CSRV_LOG_ERROR(resp->csrv, "failed to write body, errno=%s", strerror(errno));
     }
+    
+    char* key_lit = "X-Hello";
+    char* value_lit = "Hello World";
+    csrv_str_map_add(&resp->headers, strdup(key_lit), strdup(value_lit));
 
     if(csrv_write_response(resp) != 0) {
       CSRV_LOG_ERROR(csrv, "failed to write response, errno=%s", strerror(errno));
